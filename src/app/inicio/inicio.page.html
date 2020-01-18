@@ -1,0 +1,178 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-grid>
+      <ion-row>
+        <!-- <ion-col style="color: #f2fbff; font-family: Roboto;" size="7"
+          >Nutricionista</ion-col
+        >
+        <ion-col
+          style="color:#e7e7e7; font-size: small; font-family: Roboto;"
+          size="5"
+          >{{this.perfilNutricionista.getNombre()}}</ion-col
+        > -->
+        <ion-col clase="header">Nutricionista</ion-col>
+        <ion-col clase="header"></ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+  <!-- <ion-list>
+    <ion-item-group>
+      <ion-item-divider sticky>
+        <ion-label>
+          18 de Diciembre de 2019
+        </ion-label>
+      </ion-item-divider>
+
+      <ion-item-sliding #slidingItem>
+        <ion-item>
+          <ion-icon name="person"></ion-icon>
+          <ion-label>
+            <h2>Verificación cliente #13</h2>
+            <p>
+              8:00 &mdash; 12:00 PM: Urrao
+            </p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option color="favorite">
+            Favorito
+          </ion-item-option>
+          <ion-item-option>
+            Remover
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+      <ion-item-sliding #slidingItem>
+        <ion-item>
+          <ion-icon name="bus"></ion-icon>
+          <ion-label>
+            <h2>Puente Kilometro 3 </h2>
+            <p>
+              2:00 &mdash; : Bello
+            </p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option color="favorite">
+            Favorito
+          </ion-item-option>
+          <ion-item-option>
+            Remover
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+      <ion-item-sliding #slidingItem>
+        <ion-item>
+          <ion-icon name="git-network"></ion-icon>
+          <ion-label>
+            <h2>Casa de don Pedro</h2>
+            <p>
+              Todo el día: Bello
+            </p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options>
+          <ion-item-option color="favorite">
+            Favorito
+          </ion-item-option>
+          <ion-item-option>
+            Remover
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-item-group>
+    <ion-button expand="full" shape="round">
+      <ion-icon name="calendar"></ion-icon>Añadir
+    </ion-button>
+  </ion-list> -->
+
+  <ion-slides [options]="slideOpt" class="slides" pager>
+    <ion-slide>
+      <img src="/assets/img/feliz_navidad.jpg" />
+    </ion-slide>
+    <ion-slide>
+      <img src="/assets/img/contacto.jpg" />
+    </ion-slide>
+    <ion-slide>
+      <img src="/assets/img/prowheyDm-.png" />
+    </ion-slide>
+    <ion-slide>
+      <img src="/assets/img/prowheyEpoc-.png" />
+      <h3>x378gr</h3>
+    </ion-slide>
+    <ion-slide>
+      <img src="/assets/img/prowheyNet-.png" />
+    </ion-slide>
+    <ion-slide>
+      <img src="/assets/img/prowheyProteina-.png" />
+      <h3>Especial para pacientes en desnutrición</h3>
+    </ion-slide>
+    <ion-slide>
+      <img src="/assets/img/prowheyRenal-.png" />
+    </ion-slide>
+  </ion-slides>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="3"></ion-col>
+      <ion-col size="3">
+        <ion-fab>
+          <ion-fab-button (click)="listadoPacientes()">
+            <ion-icon name="people" color="dark"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+      </ion-col>
+      <ion-col size="3">
+        <ion-fab>
+          <ion-fab-button (click)="anadirPaciente()">
+            <ion-icon name="person-add" color="dark"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+      </ion-col>
+      <ion-col size="3"></ion-col>
+    </ion-row>
+    <ion-row style="padding-top: 30px;">
+      <ion-col size="3.2"></ion-col>
+      <ion-col size="3.1">
+        <h2>Pacientes</h2>
+      </ion-col>
+      <ion-col size="3">
+        <h2>Añadir</h2>
+      </ion-col>
+      <ion-col size="3"></ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="light" class="">
+      <ion-icon name="cog" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button
+        routerDirection="forward"
+        data-desc="Perfil"
+        (click)="abrirPerfil()"
+      >
+        <ion-icon name="person-add"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button data-desc="Estadisticas de uso">
+        <ion-icon name="stats"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button data-desc="Sincronizar Datos">
+        <ion-icon name="sync"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button
+        routerLink="/reminder/create"
+        routerDirection="forward"
+        data-desc="Actualizar"
+      >
+        <ion-icon name="cloud-download"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
+
+<ion-footer> </ion-footer>

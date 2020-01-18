@@ -1,0 +1,10 @@
+<ion-content>
+  <ion-slides>
+    <ion-slide class = "slide-background-color" *ngFor="let item of slides" >
+      <img class="slide-img-padding" [src]="item.img">
+      <h3 [innerHTML]="item.titulo"></h3>
+      
+      <ion-button *ngIf="flagVerificado" shape="round" (click)="continuar()"><ion-icon name="arrow-forward" slot="end"></ion-icon>Continuar</ion-button>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

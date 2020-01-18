@@ -1,0 +1,85 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="inicio" defaultHref="inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Paciente {{this.pacientForm.get("input_id").value}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+
+
+
+  <form [formGroup]="pacientForm" (ngSubmit)="guardar()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">ID:</ion-label>
+        <ion-input class="ion-text-right" type="text" formControlName="input_id"></ion-input>
+      </ion-item>
+
+      <div *ngFor="let error of errorMessages.id">
+        <ng-container *ngIf="getId().hasError(error.type) && (getId().dirty || getId().touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label>Fecha Valoracion:</ion-label>
+        <ion-datetime formControlName="input_fechaValoracion" display-format="DD-MM-YYYY"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Fecha de Nacimiento:</ion-label>
+        <ion-datetime formControlName="input_fechaNacimiento" display-format="DD-MM-YYYY" placeholder="dd-mm-aaaa"
+          required>
+        </ion-datetime>
+      </ion-item>
+
+      <div *ngFor="let error of errorMessages.fechaNacimiento">
+        <ng-container
+          *ngIf="getFechaNacimiento().hasError(error.type) && (getFechaNacimiento().dirty || getFechaNacimiento().touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+
+
+      <ion-radio-group class="radio" formControlName="input_genero" required>
+
+        <ion-item-divider>
+          Genero
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>Hombre</ion-label>
+          <ion-radio class="radio" value="hombre" slot="end" [checked]="true"></ion-radio>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Mujer</ion-label>
+          <ion-radio class="radio" slot="end" value="mujer"></ion-radio>
+        </ion-item>
+
+      </ion-radio-group>
+
+      <ion-button type="submit" [disabled]='!pacientForm.valid' expand="block">Guardar
+      </ion-button>
+
+    </ion-list>
+
+  </form>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="light" class="">
+      <ion-icon name="refresh-circle" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button routerLink="/contacts/create" routerDirection="forward" data-desc="Borrar">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+
+</ion-content>

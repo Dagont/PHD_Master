@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-wrap">Perfil Nutricionista</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="perfilForm" (ngSubmit)="guardar()">
+    <ion-list>
+      <ion-item>
+        <ion-label>Nombre</ion-label>
+        <ion-input
+          formControlName="nombre"
+          class="ion-text-right"
+          (ionBlur)="guardar()"
+        ></ion-input>
+      </ion-item>
+
+      <div *ngFor="let error of errorMessages.nombre">
+        <ng-container
+          *ngIf="getNombre().hasError(error.type) && (getNombre().dirty || getNombre().touched)"
+        >
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-button [disabled]="!perfilForm.valid" shape="round" expand="full" (click)="cerrar()"
+        >Cerrar</ion-button
+      >
+    </ion-list>
+  </form>
+</ion-content>

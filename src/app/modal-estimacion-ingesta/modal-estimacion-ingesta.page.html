@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-label class="ion-text-wrap">Listado de Ingesta</ion-label>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="flagViaOral">
+    <ion-item-divider>
+      <ion-title>Via Oral</ion-title>
+    </ion-item-divider>
+    <ion-item>
+      <ion-title class="ion-text-wrap">Desayuno</ion-title>
+    </ion-item>
+
+    <ion-item *ngFor="let item of paciente.arrayDesayuno">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-title class="ion-text-wrap">Medias Nueves</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayMediasNueves">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-title class="ion-text-wrap">Almuerzo</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayAlmuerzo">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-title class="ion-text-wrap">Onces</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayOnces">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-title class="ion-text-wrap">Cena</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayCena">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-title class="ion-text-wrap">Refrigerio Nocturno</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayRefrigerioNocturno">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-title class="ion-text-wrap">Extras</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayExtras">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-title class="ion-text-wrap">Liquidos</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayLiquidos">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="flagNutricionEntera">
+    <ion-item>
+      <ion-title>Nutricion Entera</ion-title>
+    </ion-item>
+    <ion-item *ngFor="let item of paciente.arrayNutricionEnteraTotal">
+      <ion-label>{{item[0]}}</ion-label>
+      <ion-label class="ion-text-right">{{item[1]}} porciones</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-button shape="round" expand="full" (click)="cerrar()">Cerrar</ion-button>
+</ion-content>

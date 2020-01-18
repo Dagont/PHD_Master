@@ -1,0 +1,693 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="inicio" defaultHref="inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-wrap">Estimación Ingesta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+  <form [formGroup]="estimacionIngestaForm" (ngSubmit)="guardar()">
+    <ion-list>
+      <ion-item>
+        <ion-label>Tipo</ion-label>
+        <ion-select
+          interface="popover"
+          formControlName="input_tipoEstimacion"
+          (ionChange)="definirEntradaMetodoTipoEstimacion()"
+        >
+          <ion-select-option value="Via Oral" selected
+            >Vía Oral</ion-select-option
+          >
+          <ion-select-option value="Nutricion Entera"
+            >Nutricion Entera</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
+
+      <ion-list formGroupName="viaOral" *ngIf="flagViaOral">
+        <ion-item-divider>
+          <ion-title>Vía Oral</ion-title>
+        </ion-item-divider>
+
+        <ion-list formGroupName="desayuno">
+          <ion-item>
+            <ion-label>Desayuno</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_desayuno"
+              (ionChange)="definirEntradaDesayuno()"
+            >
+            </ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagDesayuno">
+
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input
+                class="ion-text-right"
+                placeholder="Buscar"
+                formControlName="input_productosDesayuno"
+              ></ion-input>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.productosDesayuno">
+              <ng-container
+                *ngIf="getProductosDesayuno().hasError(error.type) && (getProductosDesayuno().dirty || getProductosDesayuno().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoDesayuno"
+                placeholder="#"
+              >
+              </ion-input>
+              <ion-button
+                [disabled]="!verificarDatosDesayuno()"
+                slot="end"
+                fill="clear"
+                (click)="agregarProductoDesayuno()"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionDesayuno">
+              <ng-container
+                *ngIf="getPorcionDesayuno().hasError(error.type) && (getPorcionDesayuno().dirty || getPorcionDesayuno().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayDesayuno">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('desayuno',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+
+        <ion-list formGroupName="mediasNueves">
+          <ion-item>
+            <ion-label>Medias Nueves</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_mediasNueves"
+              (ionChange)="definirEntradaMediasNueves()"
+            >
+            </ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagMediasNueves">
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_productosMediasNueves" placeholder="Buscar"></ion-input>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.productosMediasNueves">
+              <ng-container
+                *ngIf="getProductosMediasNueves().hasError(error.type) && (getProductosMediasNueves().dirty || getProductosMediasNueves().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoMediasNueves"
+                placeholder="Porciones"
+              >
+              </ion-input>
+              <ion-button
+                [disabled]="!verificarDatosMediasNueves()"
+                slot="end"
+                fill="clear"
+                (click)="agregarProductoMediasNueves()"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionMediasNueves">
+              <ng-container
+                *ngIf="getPorcionMediasNueves().hasError(error.type) && (getPorcionMediasNueves().dirty || getPorcionMediasNueves().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayMediasNueves">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('mediasNueves',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+
+        <ion-list formGroupName="almuerzo">
+          <ion-item>
+            <ion-label>Almuerzo</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_almuerzo"
+              (ionChange)="definirEntradaAlmuerzo()"
+            >
+            </ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagAlmuerzo">
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_productosAlmuerzo" placeholder="Buscar"></ion-input>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.productosAlmuerzo">
+              <ng-container
+                *ngIf="getProductosAlmuerzo().hasError(error.type) && (getProductosAlmuerzo().dirty || getProductosAlmuerzo().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoAlmuerzo"
+                placeholder="Porciones"
+              >
+              </ion-input>
+              <ion-button
+                [disabled]="!verificarDatosAlmuerzo()"
+                slot="end"
+                fill="clear"
+                (click)="agregarProductoAlmuerzo()"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionAlmuerzo">
+              <ng-container
+                *ngIf="getPorcionAlmuerzo().hasError(error.type) && (getPorcionAlmuerzo().dirty || getPorcionAlmuerzo().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayAlmuerzo">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('almuerzo',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+
+        <ion-list formGroupName="onces">
+          <ion-item>
+            <ion-label>Onces</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_onces"
+              (ionChange)="definirEntradaOnces()"
+            >
+            </ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagOnces">
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_productosOnces" placeholder="Buscar"></ion-input>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.productosOnces">
+              <ng-container
+                *ngIf="getProductosOnces().hasError(error.type) && (getProductosOnces().dirty || getProductosOnces().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoOnces"
+                placeholder="Porciones"
+              ></ion-input>
+              <ion-button
+                [disabled]="!verificarDatosOnces()"
+                (click)="agregarProductoOnces()"
+                slot="end"
+                fill="clear"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionOnces">
+              <ng-container
+                *ngIf="getPorcionOnces().hasError(error.type) && (getPorcionOnces().dirty || getPorcionOnces().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayOnces">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('onces',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+
+        <ion-list formGroupName="cena">
+          <ion-item>
+            <ion-label>Cena</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_cena"
+              (ionChange)="definirEntradaCena()"
+            ></ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagCena">
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_productosCena" placeholder="Buscar"></ion-input>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.productosCena">
+              <ng-container
+                *ngIf="getProductosCena().hasError(error.type) && (getProductosCena().dirty || getProductosCena().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoCena"
+                placeholder="Porciones"
+              ></ion-input>
+              <ion-button
+                [disabled]="!verificarDatosCena()"
+                slot="end"
+                fill="clear"
+                (click)="agregarProductoCena()"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionCena">
+              <ng-container
+                *ngIf="getProductosCena().hasError(error.type) && (getProductosCena().dirty || getProductosCena().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayCena">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('cena',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+
+        <ion-list formGroupName="refrigerioNocturno">
+          <ion-item>
+            <ion-label>Refrigerio nocturno</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_refrigerioNocturno"
+              (ionChange)="definirEntradaRefrigerioNocturno()"
+            >
+            </ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagRefrigerioNocturno">
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_productosRefrigerioNocturno" placeholder="Buscar"></ion-input>
+            </ion-item>
+
+            <div
+              *ngFor="let error of errorMessages.productosRefrigerioNocturno"
+            >
+              <ng-container
+                *ngIf="getProductosRefrigerioNocturno().hasError(error.type) && (getProductosRefrigerioNocturno().dirty || getProductosRefrigerioNocturno().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoRefrigerioNocturno"
+                placeholder="Porciones"
+              >
+              </ion-input>
+              <ion-button
+                [disabled]="!verificarDatosRefrigerioNocturno()"
+                slot="end"
+                fill="clear"
+                (click)="agregarProductoRefrigerioNocturno()"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionRefrigerioNocturno">
+              <ng-container
+                *ngIf="getPorcionRefrigerioNocturno().hasError(error.type) && (getPorcionRefrigerioNocturno().dirty || getPorcionRefrigerioNocturno().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayRefrigerioNocturno">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('refrigerioNocturno',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+
+        <ion-list formGroupName="extras">
+          <ion-item>
+            <ion-label>Extras</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_extras"
+              (ionChange)="definirEntradaExtras()"
+            >
+            </ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagExtras">
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_productosExtras" placeholder="Buscar"></ion-input>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.productosExtras">
+              <ng-container
+                *ngIf="getProductosExtras().hasError(error.type) && (getProductosExtras().dirty || getProductosExtras().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoExtras"
+                placeholder="Porciones"
+              >
+              </ion-input>
+              <ion-button
+                [disabled]="!verificarDatosExtras()"
+                slot="end"
+                fill="clear"
+                (click)="agregarProductoExtras()"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionExtras">
+              <ng-container
+                *ngIf="getPorcionExtras().hasError(error.type) && (getPorcionExtras().dirty || getPorcionExtras().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayExtras">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('extras',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+
+        <ion-list formGroupName="liquidos">
+          <ion-item>
+            <ion-label>Líquidos</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_liquidos"
+              (ionChange)="definirEntradaLiquidos()"
+            >
+            </ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagLiquidos">
+            <ion-item>
+              <ion-label>Producto</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_productosLiquidos" placeholder="Buscar"></ion-input>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.productosLiquidos">
+              <ng-container
+                *ngIf="getProductosLiquidos().hasError(error.type) && (getProductosLiquidos().dirty || getProductosLiquidos().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item>
+              <ion-input
+                type="number"
+                formControlName="input_porcionProductoLiquidos"
+                placeholder="Porciones"
+              >
+              </ion-input>
+              <ion-button
+                [disabled]="!verificarDatosLiquidos()"
+                slot="end"
+                fill="clear"
+                (click)="agregarProductoLiquidos()"
+              >
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.porcionLiquidos">
+              <ng-container
+                *ngIf="getPorcionLiquidos().hasError(error.type) && (getPorcionLiquidos().dirty || getPorcionLiquidos().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+
+            <ion-item *ngFor="let item of arrayLiquidos">
+              <ion-label class="lista">{{item[0]}}</ion-label>
+              <p>{{item[1]}}</p>
+              <ion-button
+                class="rojo"
+                slot="end"
+                fill="clear"
+                (click)="eliminarProducto('liquidos',item)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+      </ion-list>
+
+      <ion-list
+        formGroupName="nutricionEnteraTotal"
+        *ngIf="flagNutricionEntera"
+      >
+        <ion-item>
+          <ion-label>Productos</ion-label>
+          <ion-select formControlName="input_productosNutricionEnteraTotal">
+            <ion-select-option value="Prowhey NET" selected
+              >Prowhey NET</ion-select-option
+            >
+            <ion-select-option value="Prowhey DM">Prowhey DM</ion-select-option>
+            <ion-select-option value="Prowhey Renal Cronico"
+              >Prowhey Renal Crónico</ion-select-option
+            >
+            <ion-select-option value="Prowhey TRR"
+              >Prowhey TRR</ion-select-option
+            >
+            <ion-select-option value="Prowhey EPOC"
+              >Prowhey EPOC</ion-select-option
+            >
+            <ion-select-option value="Prowhey Kalor"
+              >Prowhey Kalori</ion-select-option
+            >
+            <ion-select-option value="Prowhey Oncare"
+              >Prowhey Oncare</ion-select-option
+            >
+            <ion-select-option value="Prowhey">Prowhey</ion-select-option>
+            <ion-select-option value="Prowhey Plus"
+              >Prowhey Plus</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+
+        <ion-list>
+          <ion-item>
+            <ion-input
+              formControlName="input_porcionNutricionEnteraTotal"
+              placeholder="Porciones"
+            ></ion-input>
+            <ion-button
+              [disabled]='!(estimacionIngestaForm.get("nutricionEnteraTotal.input_porcionNutricionEnteraTotal").valid && estimacionIngestaForm.get("nutricionEnteraTotal.input_productosNutricionEnteraTotal").valid)'
+              (click)="agregarProducto()"
+              slot="end"
+              fill="clear"
+            >
+              <ion-icon slot="icon-only" name="add"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <ion-item *ngFor="let item of arrayNutricionEnteraTotal">
+            <ion-label class="lista">{{item[0]}}</ion-label>
+            <p>{{item[1]}}</p>
+            <ion-button class="rojo" slot="end" fill="clear" (click)="eliminarProductoNutricionEntera(item)">
+              <ion-icon name="close" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+
+        <!-- Agregar funcionalidad del boton agregar, añadir a su vez text area con los productos agregados -->
+        <!-- Modal del recuento 07/12-->
+        <!-- que pasa cuando quito nutricion oral y cambio a via oral, y viceversa, que pasa con las validaciones-->
+        <!-- validar las porciones de entradas -->
+
+        <ion-list formGroupName="formulaArtesanal">
+          <ion-item-divider>
+            <ion-label>Formula Artesanal Adicional</ion-label>
+            <ion-toggle
+              checked="false"
+              formControlName="toggle_formulaArtesanal"
+              (ionChange)="definirEntradaFormulaArtesanal()"
+            ></ion-toggle>
+          </ion-item-divider>
+
+          <ion-list *ngIf="flagFormulaArtesanal">
+            <ion-item>
+              <ion-label>+Calorías por gastroclisis:</ion-label>
+              <ion-input
+                class="ion-text-right"
+                formControlName="input_caloriasGastroclisis"
+                type="number"
+              ></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>+Proteína por gastroclisis:</ion-label>
+              <ion-input
+                class="ion-text-right"
+                formControlName="input_proteinasGastroclisis"
+                type="number"
+              ></ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-list>
+      </ion-list>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col><ion-button
+            shape="round"
+            [disabled]="!estimacionIngestaForm.valid"
+            type="submit"
+            expand="full"
+            >Guardar</ion-button
+          ></ion-col>
+          <ion-col>
+            <ion-button (click)="abrirModal()" shape="round" expand="full">Abrir Listado</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
+    </ion-list>
+  </form>
+
+  <!-- <ion-fab horizontal="end" vertical="top" slot="fixed">
+    <ion-fab-button color="light" class="">
+      <ion-col>
+        <ion-button>Abrir Listado</ion-button>
+      </ion-col>
+      <ion-icon name="refresh-circle" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="bottom">
+      <ion-fab-button
+        routerLink="/contacts/create"
+        routerDirection="forward"
+        data-desc="Borrar"
+      >
+        <ion-icon name="refresh"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab> -->
+</ion-content>
+
+<!-- Por hacer -->
+<!-- Agregar tamaño de las porciones -->
+<!-- mirar el boton fab funcionalidad -->

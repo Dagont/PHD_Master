@@ -1,0 +1,570 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="inicio" defaultHref="inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Valoración {{idAux}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+  <form [formGroup]="valoracionForm" (ngSubmit)="abrirModal()">
+    <ion-list>
+      <ion-item>
+        <ion-label>Peso (Kg):</ion-label>
+        <ion-input
+          class="ion-text-right"
+          type="number"
+          formControlName="input_peso"
+          (ionBlur)="setPeso()"
+        ></ion-input>
+      </ion-item>
+
+      <div *ngFor="let error of errorMessages.peso">
+        <ng-container
+          *ngIf="getPeso().hasError(error.type) && (getPeso().dirty || getPeso().touched)"
+        >
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label>Talla (m):</ion-label>
+        <ion-input
+          class="ion-text-right"
+          type="number"
+          formControlName="input_talla"
+          (ionBlur)="setTalla()"
+        ></ion-input>
+      </ion-item>
+
+      <div *ngFor="let error of errorMessages.talla">
+        <ng-container
+          *ngIf="getTalla().hasError(error.type) && (getTalla().dirty || getTalla().touched)"
+        >
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-button expand="block" shape="round">Tomar talla</ion-button>
+
+      <ion-list formGroupName="tallaEstimada">
+        <ion-item-divider>
+          <ion-title>Talla Estimada</ion-title>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>Método</ion-label>
+          <ion-select
+            interface="popover"
+            formControlName="input_metodoTallaEstimada"
+            (ionChange)="definirEntradaMetodoTallaEstimada()"
+          >
+            <ion-select-option value="Rodilla-Talon"
+              >Rodilla-Talón</ion-select-option
+            >
+            <ion-select-option value="Rodilla-Maleolo"
+              >Rodilla-Maléolo</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.metodoTallaEstimada">
+          <ng-container
+            *ngIf="getMetodoTallaEstimada().hasError(error.type) && (getMetodoTallaEstimada().dirty || getMetodoTallaEstimada().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-list *ngIf="flagRodillaTalon" formGroupName="rodillaTalon">
+          <ion-item>
+            <ion-label position="floating">Altura Rodilla:</ion-label>
+            <ion-input
+              type="number"
+              class="ion-text-right"
+              formControlName="input_alturaRodilla"
+              (ionBlur)="tallaEstimada('alturaRodilla')"
+            ></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.alturaRodilla">
+            <ng-container
+              *ngIf="getAlturaRodilla().hasError(error.type) && (getAlturaRodilla().dirty || getAlturaRodilla().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+
+        <ion-list *ngIf="flagRodillaMaleolo" formGroupName="rodillaMaleolo">
+          <ion-item>
+            <ion-label position="floating">Longitud rodilla:</ion-label>
+            <ion-input
+              type="number"
+              class="ion-text-right"
+              formControlName="input_longitudRodilla"
+              (ionBlur)="tallaEstimada('longitudRodilla')"
+            ></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.longitudRodilla">
+            <ng-container
+              *ngIf="getLongitudRodilla().hasError(error.type) && (getLongitudRodilla().dirty || getLongitudRodilla().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+      </ion-list>
+
+      <ion-list formGroupName="pesoEstimado">
+        <ion-item-divider>
+          <ion-title>Peso Estimado</ion-title>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>Método</ion-label>
+          <ion-select
+            interface="popover"
+            formControlName="input_metodoPesoEstimado"
+            (ionChange)="definirEntradaMetodoPesoEstimado()"
+          >
+            <ion-select-option value="Rabito" selected
+              >Rabito</ion-select-option
+            >
+            <ion-select-option value="Lorenz">Lorenz</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.metodoPesoEstimado">
+          <ng-container
+            *ngIf="getMetodoPesoEstimado().hasError(error.type) && (getMetodoPesoEstimado().dirty || getMetodoPesoEstimado().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <!-- Método rabito  -->
+
+        <ion-list *ngIf="flagRabito" formGroupName="rabito">
+          <ion-item>
+            <ion-label>Perímetro brazo:</ion-label>
+            <ion-input
+              class="ion-text-right"
+              formControlName="input_perimetroBrazo"
+              type="number"
+              (ionBlur)="pesoEstimado('Rabito')"
+            ></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perimetroBrazo">
+            <ng-container
+              *ngIf="getPerimetroBrazo().hasError(error.type) && (getPerimetroBrazo().dirty || getPerimetroBrazo().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Perímetro abdomen:</ion-label>
+            <ion-input
+              class="ion-text-right"
+              formControlName="input_perimetroAbdomen"
+              type="number"
+              (ionBlur)="pesoEstimado('Rabito')"
+            ></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perimetroAbdomen">
+            <ng-container
+              *ngIf="getPerimetroAbdomen().hasError(error.type) && (getPerimetroAbdomen().dirty || getPerimetroAbdomen().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Perímetro pantorilla:</ion-label>
+            <ion-input
+              class="ion-text-right"
+              formControlName="input_perimetroPantorilla"
+              type="number"
+              (ionBlur)="pesoEstimado('Rabito')"
+            ></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perimetroPantorilla">
+            <ng-container
+              *ngIf="getPerimetroPantorilla().hasError(error.type) && (getPerimetroPantorilla().dirty || getPerimetroPantorilla().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+
+        <ion-list *ngIf="flagLorenz" formGroupName="lorenz">
+          <ion-item>
+            <ion-label>Perímetro abdominal:</ion-label>
+            <ion-input
+              class="ion-text-right"
+              formControlName="input_perimetroAbdominal"
+              type="number"
+              (ionBlur)="pesoEstimado('Lorenz')"
+            ></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perimetroAbdominal">
+            <ng-container
+              *ngIf="getPerimetroAbdominal().hasError(error.type) && (getPerimetroAbdominal().dirty || getPerimetroAbdominal().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Perímetro cadera:</ion-label>
+            <ion-input
+              class="ion-text-right"
+              formControlName="input_perimetroCadera"
+              type="number"
+              (ionBlur)="pesoEstimado('Lorenz')"
+            ></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perimetroCadera">
+            <ng-container
+              *ngIf="getPerimetroCadera().hasError(error.type) && (getPerimetroCadera().dirty || getPerimetroCadera().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+      </ion-list>
+
+      <!-- falta poner la lógica si es la primera valoración o si es la segunda, tercera, etc 28/12-->
+
+      <ion-item-divider>
+        <ion-title>% Pérdida de Peso</ion-title>
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Peso anterior (Kg):</ion-label>
+        <ion-input
+          disabled="true"
+          class="ion-text-right"
+          type="number"
+          [value]="this.valoracionForm.get('input_peso').value"
+        ></ion-input>
+      </ion-item>
+
+      <ion-list formGroupName="amputaciones">
+        <ion-item-divider>
+          <ion-title>Peso con Amputaciones</ion-title>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>Registra amputaciones?</ion-label>
+          <ion-toggle
+            checked="false"
+            formControlName="toggle_amputaciones"
+            (ionChange)="definirEntradaAmputaciones()"
+          >
+          </ion-toggle>
+        </ion-item>
+
+        <ion-list *ngIf="flagAmputaciones">
+          <ion-item>
+            <ion-label position="floating">Que miembros?</ion-label>
+            <ion-select
+              formControlName="input_miembrosAmputados"
+              multiple="true"
+              (ionChange)="pesoAjustadoAmputaciones()"
+            >
+              <ion-select-option>Mano</ion-select-option>
+              <ion-select-option>Antebrazo</ion-select-option>
+              <ion-select-option>Brazo hasta el hombro</ion-select-option>
+              <ion-select-option>Pie</ion-select-option>
+              <ion-select-option>Pierna debajo de la rodilla</ion-select-option>
+              <ion-select-option
+                >Pierna por encima de la rodilla</ion-select-option
+              >
+              <ion-select-option>Pierna entera</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.miembrosAmputados">
+            <ng-container
+              *ngIf="getMiembrosAmputados().hasError(error.type) && (getMiembrosAmputados().dirty || getMiembrosAmputados().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+      </ion-list>
+
+      <ion-list formGroupName="pesoIdealEstructura">
+        <ion-item-divider>
+          <ion-title>Peso ideal por estructura</ion-title>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label position="floating"
+            >Circunferencia del carpo (cm):</ion-label
+          >
+          <ion-input
+            class="ion-text-right"
+            formControlName="input_circunferenciaCarpo"
+            type="number"
+            (ionBlur)="pesoIdealEstructura()"
+          ></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.circunferenciaCarpo">
+          <ng-container
+            *ngIf="getCircunferenciaCarpo().hasError(error.type) && (getCircunferenciaCarpo().dirty || getCircunferenciaCarpo().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+      </ion-list>
+
+      <ion-list formGroupName="examenFisico">
+        <ion-item-divider>
+          <ion-title>Examen Físico</ion-title>
+        </ion-item-divider>
+
+        <ion-list formGroupName="evaluacionMuscular">
+          <ion-item-divider>
+            <ion-label>Evaluación Masa Muscular</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label>Temporal</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMMTemporal"
+              (ionBlur)="guardarEstadoTemporal()"
+            >
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.temporal">
+            <ng-container
+              *ngIf="getTemporal().hasError(error.type) && (getTemporal().dirty || getTemporal().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Clavícula y hombros</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMMClaviculaHombros"
+              (ionBlur)="guardarEstadoClaviculaHombros()"
+            >
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.claviculaHombros">
+            <ng-container
+              *ngIf="getClaviculaHombros().hasError(error.type) && (getClaviculaHombros().dirty || getClaviculaHombros().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Escapula</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMMEscapula"
+              (ionBlur)="guardarEstadoEscapula()"
+            >
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.escapula">
+            <ng-container
+              *ngIf="getEscapula().hasError(error.type) && (getEscapula().dirty || getEscapula().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Mano</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMMMano"
+              (ionBlur)="guardarEstadoMano()"
+            >
+              <ion-select-option>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.mano">
+            <ng-container
+              *ngIf="getMano().hasError(error.type) && (getMano().dirty || getMano().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Pierna</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMMPierna"
+              (ionBlur)="guardarEstadoPierna()"
+            >
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.pierna">
+            <ng-container
+              *ngIf="getPierna().hasError(error.type) && (getPierna().dirty || getPierna().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Pantorilla</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMMPantorilla"
+              (ionBlur)="guardarEstadoPantorilla()"
+            >
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.pantorilla">
+            <ng-container
+              *ngIf="getPantorilla().hasError(error.type) && (getPantorilla().dirty || getPantorilla().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+
+        <ion-list formGroupName="evaluacionGrasa">
+          <ion-item-divider>
+            <ion-label>Evaluación Masa Grasa</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label>Orbital</ion-label>
+            <ion-select interface="popover" formControlName="input_EMGOrbital"(ionBlur)="guardarEstadoOrbital()"> 
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.orbital">
+            <ng-container
+              *ngIf="getOrbital().hasError(error.type) && (getOrbital().dirty || getOrbital().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Torácica y lumbar</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMGToracicaLumbar"
+              (ionBlur)="guardarEstadoToracicaLumbar()"
+            >
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.toracicaLumbar">
+            <ng-container
+              *ngIf="getToracicaLumbar().hasError(error.type) && (getToracicaLumbar().dirty || getToracicaLumbar().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Brazo (triceps)</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_EMGBrazoTriceps"
+              (ionBlur)="guardarEstadoBrazoTriceps()"
+            >
+              <ion-select-option selected>Sin Compromiso</ion-select-option>
+              <ion-select-option>Moderado</ion-select-option>
+              <ion-select-option>Severo</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.brazoTriceps">
+            <ng-container
+              *ngIf="getBrazoTriceps().hasError(error.type) && (getBrazoTriceps().dirty || getBrazoTriceps().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+      </ion-list>
+
+      <ion-list>
+        <ion-item-divider>
+          <ion-label>Observaciones</ion-label>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-textarea
+            formControlName="input_observaciones"
+            placeholder="..."
+          ></ion-textarea>
+        </ion-item>
+      </ion-list>
+    </ion-list>
+    <ion-button shape="round" class="ion-text-wrap" type="submit" expand="block"
+      >Ver Datos Valoracion</ion-button
+    >
+  </form>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="light" class="">
+      <ion-icon name="refresh-circle" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button
+        routerLink="/contacts/create"
+        routerDirection="forward"
+        data-desc="Borrar"
+      >
+        <ion-icon name="refresh"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
+
+<!-- por hacer -->
+<!-- porcentaje perdida de peso -->

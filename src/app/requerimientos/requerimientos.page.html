@@ -1,0 +1,245 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="inicio" defaultHref="inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Requerimientos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="requerimientosForm">
+    <ion-list>
+      <ion-item-divider>
+        <ion-title class="ion-text-wrap">Requerimiento de calorías</ion-title>
+      </ion-item-divider>
+
+      <ion-list formGroupName="pulgar">
+        <ion-item-divider>
+          <ion-label>Metodo Pulgar</ion-label>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>Kcal/Kg que se requiere:</ion-label>
+          <ion-input
+            formControlName="input_pulgarKCRequeridas"
+            type="number"
+            (ionChange)="calculoPulgar()"
+          ></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.kcRequeridas">
+          <ng-container
+            *ngIf="getPulgarKCrequeridas().hasError(error.type) && (getPulgarKCrequeridas().dirty || getPulgarKCrequeridas().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-list *ngIf="flagPulgarPeso" >
+
+          <ion-item>
+            <ion-label>Ingrese Peso: </ion-label>
+            <ion-input class="ion-text-right" formControlName="input_peso" (ionBlur)="calculoPulgar()"></ion-input>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.peso">
+            <ng-container
+              *ngIf="getPeso().hasError(error.type) && (getPeso().dirty || getPeso().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+        </ion-list>
+
+        <ion-item>
+          <ion-label class="ion-text-wrap">Requerimiento Calorias por pulgar: </ion-label>
+          <ion-input class="resultado" formControlName="resultado"></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <ion-list formGroupName="harris">
+        <ion-item-divider>
+          <ion-label>Metodo Harris Benedict</ion-label>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>Peso(Kg):</ion-label>
+          <ion-input formControlName="input_peso" type="number" (ionChange)="calculoHarrisBenedict()"></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.peso">
+          <ng-container
+            *ngIf="getHarrisPeso().hasError(error.type) && (getHarrisPeso().dirty || getHarrisPeso().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-label>Talla(cm):</ion-label>
+          <ion-input formControlName="input_talla" type="number" (ionChange)="calculoHarrisBenedict()"></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.talla">
+          <ng-container
+            *ngIf="getHarrisTalla().hasError(error.type) && (getHarrisTalla().dirty || getHarrisTalla().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-label>Edad(años):</ion-label>
+          <ion-input class="ion-text-right" formControlName="input_edad" type="number" (ionChange)="calculoHarrisBenedict()"></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.edad">
+          <ng-container
+            *ngIf="getLiquidoEdad().hasError(error.type) && (getLiquidoEdad().dirty || getLiquidoEdad().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-label>Genero:</ion-label>
+          <ion-select formControlName="input_sexo" (ionChange)="calculoHarrisBenedict()">
+            <ion-select-option value="hombre">Hombre</ion-select-option>
+            <ion-select-option value="mujer">Mujer</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.sexo">
+          <ng-container
+            *ngIf="getHarrisSexo().hasError(error.type) && (getHarrisSexo().dirty || getHarrisSexo().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-label class="ion-text-wrap">Requerimiento Calorias por Harris</ion-label>
+          <ion-input class="resultado" formControlName="resultado"></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <ion-list formGroupName="proteina">
+        <ion-item-divider>
+          <ion-label>Requerimiento de proteína</ion-label>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>gr/kg que se requiere:</ion-label>
+          <ion-input
+            formControlName="input_gramosProteinaRequeridosKilo"
+            type="number"
+            (ionBlur)="calculoProteina()"
+          ></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.proteina">
+          <ng-container
+            *ngIf="getGramosProteina().hasError(error.type) && (getGramosProteina().dirty || getGramosProteina().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-label class="ion-text-wrap">Requerimiento de Proteina: </ion-label>
+          <ion-input class="resultado" formControlName="resultado"></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <ion-list formGroupName="liquido">
+        <ion-item-divider>
+          <ion-label>Requerimiento de líquidos</ion-label>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label>Edad:</ion-label>
+          <ion-input formControlName="input_edad" type="number" (ionBlur)="calculoLiquido()"></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.edad">
+          <ng-container
+            *ngIf="getLiquidoEdad().hasError(error.type) && (getLiquidoEdad().dirty || getLiquidoEdad().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <!-- para hacer -->
+        <!-- Aquí se pueden escoger varias combinaciones con restriccion + bajo peso; sin restriccion + bajo peso 06/12 -->
+
+        <ion-list>
+          <ion-item>
+            <ion-label class="ion-text-wrap"
+              >Situación Clínica (seleccione)
+            </ion-label>
+            <ion-select formControlName="input_situacionClinicaLiquido" (ionBlur)="calculoLiquido()">
+              <ion-select-option value="1">Con restricción de líquidos</ion-select-option>
+              <ion-select-option value="0">Sin restricción de líquidos</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.situacionClinica">
+            <ng-container
+              *ngIf="getLiquidoSituacionClinica().hasError(error.type) && (getLiquidoSituacionClinica().dirty ||getLiquidoSituacionClinica().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Tiene bajo peso</ion-label>
+            <ion-toggle formControlName="toggle_situacionClinicaPeso" (ionChange)="calculoLiquido()"></ion-toggle>
+          </ion-item>
+        </ion-list>
+
+        <ion-item>
+          <ion-label>Peso:</ion-label>
+          <ion-input formControlName="input_peso" type="number" (ionChange)="calculoLiquido()"></ion-input>
+        </ion-item>
+
+        <div *ngFor="let error of errorMessages.peso">
+          <ng-container
+            *ngIf="getLiquidoPeso().hasError(error.type) && (getLiquidoPeso().dirty ||getLiquidoPeso().touched)"
+          >
+            <small class="error-message">{{error.message}}</small>
+          </ng-container>
+        </div>
+
+        <ion-item>
+          <ion-label class="ion-text-wrap">Requerimiento de Liquido</ion-label>
+          <ion-input class="resultado" formControlName="resultado"></ion-input>
+        </ion-item>
+
+      </ion-list>
+      
+    </ion-list>
+
+  </form>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="light" class="">
+      <ion-icon name="refresh-circle" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button
+        routerLink="/contacts/create"
+        routerDirection="forward"
+        data-desc="Borrar"
+      >
+        <ion-icon name="refresh"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
+
+<!-- para hacer -->
+<!-- popular datos del paciente si existen (peso, etc) -->
+<!-- Si no hay peso del cliente, se da la opcion para que lo agregue -->
+<!-- metodo pulgar y harris se hace, no se tiene que escoger uno de ellos -->

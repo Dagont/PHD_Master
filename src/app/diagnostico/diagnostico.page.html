@@ -1,0 +1,584 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="inicio" defaultHref="inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Diagnostico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+  <form [formGroup]="diagnosticoForm">
+    <ion-list>
+      <ion-item>
+        <ion-label>Tipo</ion-label>
+        <ion-select
+          interface="popover"
+          formControlName="input_tipoDiagnostico"
+          (ionChange)="definirMetodoTipoDiagnostico()"
+        >
+          <ion-select-option value="Tamizaje" selected
+            >Tamizaje</ion-select-option
+          >
+          <ion-select-option value="Glim">Glim</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <div *ngFor="let error of errorMessages.tipoDiagnostico">
+        <ng-container
+          *ngIf="getTipoDiagnostico().hasError(error.type) && (getTipoDiagnostico().dirty || getTipoDiagnostico().touched)"
+        >
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-list formGroupName="tamizaje" *ngIf="flagTamizaje">
+        <ion-item-divider>
+          <ion-title class="ion-text-center">Tamizaje</ion-title>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-label></ion-label>
+          <ion-select
+            interface="popover"
+            formControlName="tipoTamizaje"
+            (ionChange)="definirMetodoTamizaje()"
+          >
+            <ion-select-option value="MNA">MNA</ion-select-option>
+            <ion-select-option value="MST">MST</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-list formGroupName="MNA" *ngIf="flagTamizajeMNA">
+          <ion-item-divider>
+            <ion-title>MNA</ion-title>
+          </ion-item-divider>
+
+          <ion-item-divider *ngIf="flagTamizaje">
+            <ion-label>Disminución en la ingesta (3 meses)</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajePerdidaApetito"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0" selected
+                >ha comido mucho menos</ion-select-option
+              >
+              <ion-select-option value="1">ha comido menos</ion-select-option>
+              <ion-select-option value="2">ha comido normal</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perdidaApetito">
+            <ng-container
+              *ngIf="getTamizajePerdidaApetito().hasError(error.type) && (getTamizajePerdidaApetito().dirty || getTamizajePerdidaApetito().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label>Pérdida de peso (ult 3 meses)</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajePerdidaPeso"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0" selected>>3Kg</ion-select-option>
+              <ion-select-option value="1">no lo sabe</ion-select-option>
+              <ion-select-option value="2">entre 1 y 3 kg</ion-select-option>
+              <ion-select-option value="3"
+                >no ha habido pérdida de peso</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perdidaPeso">
+            <ng-container
+              *ngIf="getTamizajePerdidaPeso().hasError(error.type) && (getTamizajePerdidaPeso().dirty || getTamizajePerdidaPeso().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label>Movilidad</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajeMovilidad"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0" selected
+                >de la cama a la silla</ion-select-option
+              >
+              <ion-select-option value="1"
+                >autonomía en el interior</ion-select-option
+              >
+              <ion-select-option value="2"
+                >sale del domicilio</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.movilidad">
+            <ng-container
+              *ngIf="getTamizajeMovilidad().hasError(error.type) && (getTamizajeMovilidad().dirty || getTamizajeMovilidad().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label class="ion-text-wrap">Enfermedad aguda/Estrés psicológico (3 meses)</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajeEnfermedadAgudaEstresPsicologico"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0" selected>Si</ion-select-option>
+              <ion-select-option value="2">No</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.enfermedadAguda">
+            <ng-container
+              *ngIf="getTamizajeEnfermedadAgudaEstresPsicologico().hasError(error.type) && (getTamizajeEnfermedadAgudaEstresPsicologico().dirty || getTamizajeEnfermedadAgudaEstresPsicologico().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label>Problemas neuropsicológicos</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajeProblemasNeuropsicologicos"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0" selected
+                >Demencia o depresión grave
+              </ion-select-option>
+              <ion-select-option value="1">Demencia moderada</ion-select-option>
+              <ion-select-option value="2"
+                >Sin problemas psicológicos</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.problemasNeuropsicologicos">
+            <ng-container
+              *ngIf="getTamizajeProblemasNeuropsicologicos().hasError(error.type) && (getTamizajeProblemasNeuropsicologicos().dirty || getTamizajeProblemasNeuropsicologicos().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label>IMC:</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select interface="popover" formControlName="input_tamizajeIMC" (ionChange)="calcularDesnutricion()">
+              <ion-select-option value="0" selected> < 19</ion-select-option>
+              <ion-select-option value="1">19 - 20.9 </ion-select-option>
+              <ion-select-option value="2">21 - 22.9</ion-select-option>
+              <ion-select-option value="3">>=23</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.IMC">
+            <ng-container
+              *ngIf="getTamizajeIMC().hasError(error.type) && (getTamizajeIMC().dirty || getTamizajeIMC().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label>Perímetro de pantorrilla:</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajePerimetroPantorilla"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0" selected> < 31cm</ion-select-option
+              ><ion-select-option value="3">> 31cm </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perimetroPantorilla">
+            <ng-container
+              *ngIf="getTamizajePerimetroPantorilla().hasError(error.type) && (getTamizajePerimetroPantorilla().dirty || getTamizajePerimetroPantorilla().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label>Interpretación de resultados:</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-input class="resultado" formControlName="resultado" placeholder="Resultado:"></ion-input>
+          </ion-item>
+        </ion-list>
+
+        <ion-list formGroupName="MST" *ngIf="flagTamizajeMST">
+          <ion-item-divider>
+            <ion-title>MST</ion-title>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label>Perdida de Peso Involuntaria</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajePerdidaPeso"
+              (ionChange)="definirEntradaMSTPeso()"
+            >
+              <ion-select-option value="0">No</ion-select-option>
+              <ion-select-option value="2">No estoy seguro</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perdidaPeso">
+            <ng-container
+              *ngIf="getTamizajeMSTPerdidaPeso().hasError(error.type) && (getTamizajeMSTPerdidaPeso().dirty || getTamizajeMSTPerdidaPeso().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-list *ngIf="flagTamizajeMSTPerdidaPeso">
+            <ion-item>
+              <ion-label>Cant. Perdida de Peso</ion-label>
+              <ion-select
+                interface="popover"
+                formControlName="input_tamizajeCantidadPerdidaPeso"
+                (ionChange)="calcularDesnutricion()"
+              >
+                <ion-select-option value="1">1 - 5 Kg</ion-select-option>
+                <ion-select-option value="2">6 - 10 Kg</ion-select-option>
+                <ion-select-option value="3">11 - 15 Kg</ion-select-option>
+                <ion-select-option value="4"> >15 Kg</ion-select-option>
+                <ion-select-option value="2"> No sabe</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <div *ngFor="let error of errorMessages.cantidadPerdidaPeso">
+              <ng-container
+                *ngIf="getTamizajeMSTCantidadPerdidaPeso().hasError(error.type) && (getTamizajeMSTCantidadPerdidaPeso().dirty || getTamizajeMSTCantidadPerdidaPeso().touched)"
+              >
+                <small class="error-message">{{error.message}}</small>
+              </ng-container>
+            </div>
+          </ion-list>
+
+          <ion-item>
+            <ion-label>Ha Comido Menos de lo normal</ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_tamizajeDisminucionApetito"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="1">Si</ion-select-option>
+              <ion-select-option value="0">No</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.disminucionApetito">
+            <ng-container
+              *ngIf="getTamizajeMSTDisminucionApetito().hasError(error.type) && (getTamizajeMSTDisminucionApetito().dirty || getTamizajeMSTDisminucionApetito().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item>
+            <ion-label>Resultado</ion-label>
+            <ion-input formControlName="resultado"></ion-input>
+          </ion-item>
+        </ion-list>
+      </ion-list>
+
+      <!-- Poner
+         lógica de negocio para agregar glim automáticamente (esconder) 06/12 // done-->
+
+      <ion-list formGroupName="glim" *ngIf="flagGlim">
+        <ion-item-divider>
+          <ion-title>Glim</ion-title>
+        </ion-item-divider>
+
+        <ion-list formGroupName="criteriosFenotipicos">
+          <ion-item-divider>
+            <ion-label>Criterios Fenotípicos</ion-label>
+          </ion-item-divider>
+
+          <ion-item-divider>
+            <ion-label>%Pérdida de peso</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_glimPerdidaPeso"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0">Ninguna</ion-select-option>
+              <ion-select-option value="1" selected
+                >> 5% en los últimos seis meses
+              </ion-select-option>
+              <ion-select-option value="2"
+                >> 10% en más de 6 meses</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.perdidaPeso">
+            <ng-container
+              *ngIf="getGlimPerdidaPeso().hasError(error.type) && (getGlimPerdidaPeso().dirty || getGlimPerdidaPeso().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <!-- arreglar el simbolo cuadratico de la ecuación -->
+          <!-- Verificar una forma para que en el selector aparezca la pregunta -->
+          <ion-item-divider>
+            <ion-label>IMC (Kg/m^2)</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select interface="popover" formControlName="input_glimIMC" (ionChange)="calcularDesnutricion()">
+              <ion-select-option value="0">No aplica </ion-select-option>
+              <ion-select-option value="1" selected>
+                < 20% si menor a 70 años</ion-select-option
+              >
+              <ion-select-option value="2">
+                < 22 si mayor de 70 años</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.IMC">
+            <ng-container
+              *ngIf="getGlimIMC().hasError(error.type) && (getGlimIMC().dirty || getGlimIMC().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-item-divider>
+            <ion-label>Reducción masa muscular</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_glimReduccionMuscular"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0" selected>No</ion-select-option>
+              <ion-select-option value="1">Si</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.reduccionMuscular">
+            <ng-container
+              *ngIf="getGlimReduccionMuscular().hasError(error.type) && (getGlimReduccionMuscular().dirty || getGlimReduccionMuscular().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+
+        <ion-list formGroupName="criteriosEtiologicos">
+          <ion-item-divider>
+            <ion-title>Criterios Etiológicos</ion-title>
+          </ion-item-divider>
+
+          <ion-item-divider>
+            <ion-label>Reducción ingesta o asimilación</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label></ion-label>
+            <ion-select
+              interface="popover"
+              formControlName="input_glimReduccionIngesta"
+              (ionChange)="calcularDesnutricion()"
+            >
+              <ion-select-option value="0">Ninguna</ion-select-option>
+              <ion-select-option value="1" selected>
+                < 50% del requerimiento por una semana</ion-select-option
+              >
+              <ion-select-option value="2"
+                >Cualquier reducción en la ingesta durante más de dos semanas
+              </ion-select-option>
+              <ion-select-option
+                value="El paciente tiene alguna condicion gastrointestinal crónica que afecte la absorción de
+      nutrientes"
+                >El paciente tiene alguna condicion gastrointestinal crónica que
+                afecte la absorción de nutrientes</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+
+          <div *ngFor="let error of errorMessages.reduccionIngesta">
+            <ng-container
+              *ngIf="getGlimReduccionIngesta().hasError(error.type) && (getGlimReduccionIngesta().dirty || getGlimReduccionIngesta().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+
+          <ion-radio-group
+            formControlName="input_glimInflamacion"
+            (ionChange)="calcularDesnutricion()"
+          >
+            <ion-item-divider>
+              <ion-label>Inflamación (seleccione)</ion-label>
+            </ion-item-divider>
+
+            <ion-item>
+              <ion-label>No tiene ninguna condición adicional</ion-label>
+              <ion-radio value="0" slot="end"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label
+                >Cursa alguna enfermedad aguda con enfermedad crónica</ion-label
+              >
+              <ion-radio value="1" slot="end"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+
+          <div *ngFor="let error of errorMessages.inflamacion">
+            <ng-container
+              *ngIf="getGlimInflamacion().hasError(error.type) && (getGlimInflamacion().dirty || getGlimInflamacion().touched)"
+            >
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-list>
+
+        <ion-item>
+          <ion-input formControlName="resultado">Resultado: </ion-input>
+        </ion-item>
+      </ion-list>
+
+      <ion-list formGroupName="desnutricion" *ngIf="flagGlimDesnutricion" >
+        <ion-item-divider>
+          <ion-title>Severidad de la Desnutricion</ion-title>
+        </ion-item-divider>
+
+        <ion-radio-group class="radio" formControlName="input_perdidaPeso" (ionChange)="calcularSeveridadDesnutricion()">
+
+          <ion-item-divider>
+            <ion-label>Perdida de peso(%)</ion-label>
+          </ion-item-divider>
+  
+          <ion-item>
+            <ion-label class="ion-text-wrap">5-10% en 6 meses o 10-20% en mas de 6 meses</ion-label>
+            <ion-radio class="radio" value="0" slot="end"></ion-radio>
+          </ion-item>
+  
+          <ion-item>
+            <ion-label class="ion-text-wrap">>10% en 6 meses o >20% en mas de 6 meses</ion-label>
+            <ion-radio class="radio" slot="end" value="1"></ion-radio>
+          </ion-item>
+  
+        </ion-radio-group>
+
+        <ion-radio-group class="radio" formControlName="input_imc" (ionChange)="calcularSeveridadDesnutricion()">
+
+          <ion-item-divider>
+            <ion-label>IMC(Kg/m^2)</ion-label>
+          </ion-item-divider>
+  
+          <ion-item>
+            <ion-label class="ion-text-wrap"> < 20% si < 70 años o < 22% si >= 70 años</ion-label>
+            <ion-radio class="radio" value="0" slot="end"></ion-radio>
+          </ion-item>
+  
+          <ion-item>
+            <ion-label class="ion-text-wrap"> < 18.5% si < 70 años o < 20% si >= 70 años</ion-label>
+            <ion-radio class="radio" slot="end" value="1"></ion-radio>
+          </ion-item>
+  
+        </ion-radio-group>
+
+        <ion-radio-group class="radio" formControlName="input_reduccionMasaMuscular" (ionChange)="calcularSeveridadDesnutricion()">
+
+          <ion-item-divider>
+            <ion-label class="ion-text-wrap">Reduccion Masa Muscular</ion-label>
+          </ion-item-divider>
+  
+          <ion-item>
+            <ion-label class="ion-text-wrap"> Deficit leve a moderado</ion-label>
+            <ion-radio class="radio" value="0" slot="end"></ion-radio>
+          </ion-item>
+  
+          <ion-item>
+            <ion-label class="ion-text-wrap"> Deficit severo</ion-label>
+            <ion-radio class="radio" slot="end" value="1"></ion-radio>
+          </ion-item>
+  
+        </ion-radio-group>
+
+        <ion-item-divider>
+          <ion-label>Resultado: </ion-label>
+          <ion-input formControlName="resultado"></ion-input>
+        </ion-item-divider>
+
+        
+
+      </ion-list>
+    </ion-list>
+  </form>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="light" class="">
+      <ion-icon name="refresh-circle" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button
+        routerLink="/contacts/create"
+        routerDirection="forward"
+        data-desc="Borrar"
+      >
+        <ion-icon name="refresh"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
+
+<!-- por hacer -->
+
+

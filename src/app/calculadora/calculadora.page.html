@@ -1,0 +1,190 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="inicio" defaultHref="inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Calculadora</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="background">
+
+  <form [formGroup]="calculadoraForm" (ngSubmit)="guardar()">
+
+    <ion-list>
+
+      <ion-item>
+
+        <ion-label>Tipo de Soporte</ion-label>
+
+        <ion-select interface="popover" formControlName="input_metodoSoporte" (ionChange)="definirTipoSoporte()">
+          <ion-select-option>Nutricion entera total</ion-select-option>
+          <ion-select-option>Suplementacion via oral</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-list formGroupName="nutricionEnteraTotal" *ngIf="flagNutricionEnteraTotal">
+
+        <ion-item-divider>
+          <ion-title>Nutricion Entera Total</ion-title>
+        </ion-item-divider>
+
+        <ion-item>
+
+          <ion-label>Producto</ion-label>
+
+          <ion-select interface="popover" formControlName="input_producto">
+            <ion-select-option>Prowhey NET</ion-select-option>
+            <ion-select-option>Prowhey DM</ion-select-option>
+            <ion-select-option>Prowhey Renal Cronico</ion-select-option>
+            <ion-select-option>Prowhey TRR</ion-select-option>
+            <ion-select-option>Prowhey EPOC</ion-select-option>
+            <ion-select-option>Prowhey kalori</ion-select-option>
+            <ion-select-option>Prowhey Oncare</ion-select-option>
+            <ion-select-option>Prowhey</ion-select-option>
+            <ion-select-option>Prowhey Plus</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-input type="number" formControlName="input_porcion" placeholder="Porcion">
+          </ion-input>
+          <ion-button [disabled]="!verificarDatosNutricionEntera()" slot="end" fill="clear"
+            (click)="agregarProductoNutricionEntera()">
+            <ion-icon name="add" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-item *ngFor="let item of arrayNutricionEnteraTotal">
+          <ion-label class="lista">{{item[0]}}</ion-label>
+          <p>{{item[1]}}</p>
+          <ion-button class="rojo" slot="end" fill="clear" (click)="eliminarProducto('nutricionEnteraTotal',item)">
+            <ion-icon name="close" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-list formGroupName="formulaArtesanal">
+          <ion-item>
+            <ion-label>Formula Artesanal</ion-label>
+            <ion-toggle checked="false" formControlName="toggle_formulaArtesanal"
+              (ionChange)="definirFormulaArtesanal()"></ion-toggle>
+          </ion-item>
+
+          <ion-list *ngIf="flagFormulaArtesanal">
+
+            <ion-item>
+              <ion-label>Calorias Gastroclisis</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_caloriasGastroclisis" type="number"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Proteina Gastroclisis</ion-label>
+              <ion-input class="ion-text-right" formControlName="input_proteinaGastroclisis" type="number"></ion-input>
+            </ion-item>
+
+          </ion-list>
+
+        </ion-list>
+
+      </ion-list>
+
+      <ion-list formGroupName="viaOral" *ngIf="flagViaOral">
+
+        <ion-item-divider>
+          <ion-title>Via Oral</ion-title>
+        </ion-item-divider>
+
+        <ion-list formGroupName="cuestionario">
+
+          <ion-item>
+            <ion-label>Consumo Calorias Via Oral</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>%Requerimiento calorico</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Consumo Proteinas Via Oral</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>%Requerimiento proteinico</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Consumo Carbohidratos</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Consumo Grasas</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+        </ion-list>
+
+        <ion-list formGroupName="suplementacionNutricional">
+
+          <ion-item>
+            <ion-label>Producto</ion-label>
+            <ion-select interface="popover" formControlName="input_producto">
+              <ion-select-option>Prowhey NET</ion-select-option>
+              <ion-select-option>Prowhey DM</ion-select-option>
+              <ion-select-option>Prowhey Renal Cronico</ion-select-option>
+              <ion-select-option>Prowhey TRR</ion-select-option>
+              <ion-select-option>Prowhey EPOC</ion-select-option>
+              <ion-select-option>Prowhey kalori</ion-select-option>
+              <ion-select-option>Prowhey Oncare</ion-select-option>
+              <ion-select-option>Prowhey</ion-select-option>
+              <ion-select-option>Prowhey Plus</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-input type="number" formControlName="input_porcion" placeholder="Porcion">
+            </ion-input>
+            <ion-button [disabled]="!verificarDatosViaOral()" slot="end" fill="clear"
+              (click)="agregarProductoViaOral()">
+              <ion-icon name="add" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <ion-item *ngFor="let item of arrayViaOral">
+            <ion-label class="lista">{{item[0]}}</ion-label>
+            <p>{{item[1]}}</p>
+            <ion-button class="rojo" slot="end" fill="clear" (click)="eliminarProducto('viaOral',item)">
+              <ion-icon name="close" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+        </ion-list>
+
+      </ion-list>
+
+      <ion-button [disabled]="!calculadoraForm.valid" type="submit" expand="block">Agregar</ion-button>
+
+    </ion-list>
+
+  </form>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="light" class="">
+      <ion-icon name="refresh-circle" color="dark"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button routerLink="/contacts/create" routerDirection="forward" data-desc="Borrar">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+
+</ion-content>
+
+<!-- por hacer -->
+<!-- hacer grafico de calulos (colores rojo, naranja, verde) -->
+<!-- cuestionario de suplementacion via oral, preguntar como funciona ese metodo en especifico -->
