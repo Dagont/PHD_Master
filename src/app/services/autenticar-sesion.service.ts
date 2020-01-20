@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import swal from 'sweetalert2';
+import { promise } from 'protractor';
 
 
 
@@ -29,7 +30,7 @@ export class AutenticarSesionService {
   private Token:string;
   private UrlBase: string;
   private tokenResponse: [];
-  public isConnected:boolean = true;
+  
 
   constructor(ObtenerID: ObtenerIdUnicoService, private variablesGlobales: VariablesGlobalesService,
     private http: HttpClient) {
@@ -46,7 +47,6 @@ export class AutenticarSesionService {
 
 
   obtenerToken() {
-
     var ServerUrl = this.UrlBase + 'ValidateToken.php?token='+this.Token+'&appData=' + this.IdUsuarioUnico;
     console.log(ServerUrl);
     return this.http.get(ServerUrl).pipe(
@@ -59,7 +59,7 @@ export class AutenticarSesionService {
 
   }
 
-  validarToken() {
+  validarToken():boolean {
     this.obtenerToken().subscribe(res => {
       this.tokenResponse = JSON.parse(JSON.stringify(res));
       console.log(this.tokenResponse);
@@ -76,5 +76,8 @@ export class AutenticarSesionService {
         return true;
       }
     });
+    return false;
   }
+
+  
 }

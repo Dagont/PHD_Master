@@ -26,9 +26,6 @@ export class VariablesGlobalesService {
   }
 
   getToken() {
-
     return this.storage.get('Token')
-
-
   }
 }

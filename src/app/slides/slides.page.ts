@@ -31,8 +31,11 @@ export class SlidesPage implements OnInit {
 
 
   continuar() {
-    this.AutenticarSesionService.validarToken();
+    if (this.AutenticarSesionService.validarToken()){
     this.route.navigateByUrl("/inicio");
+    }else{
+
+    }
   }
 
 

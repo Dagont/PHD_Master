@@ -34,7 +34,6 @@ export class SincronizarProductosService {
 
 
   obtenerProductos() {
-    
     var ServerUrl = this.UrlBase + 'GetProducts.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
     return this.http.get(ServerUrl).pipe(
       catchError(
@@ -45,11 +44,6 @@ export class SincronizarProductosService {
       ));
 
   }
-
-  obtenerUrlBase() {
-    return this.UrlBase;
-  }
-
 
   parsearProductos() {
     this.obtenerProductos().subscribe(res => {
@@ -75,6 +69,8 @@ export class SincronizarProductosService {
             resumenProductos+='['+element.IDPRODUCTO+'] '+element.PRODUCTO+'\n'
           });
 
+          //guardarProductos(this.productos);
+
           if (result.value) {
             swal.fire(
               'Elementos importados',
@@ -83,7 +79,6 @@ export class SincronizarProductosService {
             )
           }
         })
-        //swal.fire('Exito', 'Se importaron ' + this.productos.length + ' productos', 'success');
       }
     });
   }
