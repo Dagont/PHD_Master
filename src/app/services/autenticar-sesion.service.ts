@@ -27,27 +27,30 @@ const Toast = swal.mixin({
 })
 export class AutenticarSesionService {
   private IdUsuarioUnico: string;
-  private Token:string;
+  private Token: string;
   private UrlBase: string;
   private tokenResponse: [];
-  
 
-  constructor(ObtenerID: ObtenerIdUnicoService, private variablesGlobales: VariablesGlobalesService,
+
+  constructor(private ObtenerID: ObtenerIdUnicoService, private variablesGlobales: VariablesGlobalesService,
     private http: HttpClient) {
-    this.IdUsuarioUnico = ObtenerID.getID_UID("IMEI");
+
+    this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
     //this.IdUsuarioUnico = '864879035862160'
     this.UrlBase = variablesGlobales.getUrlBase();
-    this.variablesGlobales.getToken().then((token)=>{
-      setTimeout(()=>{
-        this.Token=token;
-      },1000)
+    this.variablesGlobales.getToken().then((token) => {
+      setTimeout(() => {
+        this.Token = token;
+      }, 1000)
     })
   }
 
 
 
+
   obtenerToken() {
-    var ServerUrl = this.UrlBase + 'ValidateToken.php?token='+this.Token+'&appData=' + this.IdUsuarioUnico;
+
+    var ServerUrl = this.UrlBase + 'ValidateToken.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
     console.log(ServerUrl);
     return this.http.get(ServerUrl).pipe(
       catchError(
@@ -59,7 +62,7 @@ export class AutenticarSesionService {
 
   }
 
-  validarToken():boolean {
+  validarToken(): boolean {
     this.obtenerToken().subscribe(res => {
       this.tokenResponse = JSON.parse(JSON.stringify(res));
       console.log(this.tokenResponse);
@@ -79,5 +82,5 @@ export class AutenticarSesionService {
     return false;
   }
 
-  
+
 }

@@ -21,17 +21,15 @@ export class SincronizarProductosService {
 
 
   constructor(private http: HttpClient, private variablesGlobales: VariablesGlobalesService,
-    ObtenerID: ObtenerIdUnicoService) {
-    this.IdUsuarioUnico = ObtenerID.getID_UID("IMEI");
+    private ObtenerID: ObtenerIdUnicoService) {
+    this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
     this.UrlBase = this.variablesGlobales.getUrlBase();
     this.variablesGlobales.getToken().then((token)=>{
       setTimeout(()=>{
         this.Token=token;
       },1000)
     })
-
   }
-
 
   obtenerProductos() {
     var ServerUrl = this.UrlBase + 'GetProducts.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
