@@ -6,6 +6,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ModalController, Platform } from "@ionic/angular";
 import { Perfil } from "../Class/Perfil";
+import { SincronizarProductosService } from "../services/sincronizar-productos.service";
 
 @Component({
   selector: "app-inicio",
@@ -23,7 +24,8 @@ export class InicioPage implements OnInit {
     private route: Router,
     private modalCtrl: ModalController,
     private plt: Platform,
-    private dataService: DataService
+    private dataService: DataService,
+    private SincronizarProductosService : SincronizarProductosService
   ) {
     
     // this.plt.ready().then(()=>{
@@ -55,6 +57,9 @@ export class InicioPage implements OnInit {
     this.route.navigateByUrl("/listado-pacientes");
   }
 
+  sincronizarDatos(){
+    this.SincronizarProductosService.parsearProductos();
+  }
   // abre el modal del perfil
   async abrirPerfil() {
     const modal = await this.modalCtrl.create({

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { Storage } from '@ionic/storage';
 
 
 @Injectable({
@@ -10,11 +11,12 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 export class ObtenerIdUnicoService {
 
   UniqueDeviceID:string;
+  
 
   constructor(
     private uniqueDeviceID: UniqueDeviceID,
     private uid: Uid,
-    private androidPermissions: AndroidPermissions
+    private androidPermissions: AndroidPermissions,
   ) {
     //Verificar Permisos al iniciar el APP
     this.getPermission();
@@ -68,6 +70,8 @@ export class ObtenerIdUnicoService {
       return this.uid.UUID;
     }
   }
+
+  
 
   
 }

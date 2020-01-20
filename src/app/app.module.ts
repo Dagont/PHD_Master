@@ -10,6 +10,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { Network } from '@ionic-native/network/ngx';
 
 import { HTTP } from '@ionic-native/http/ngx';
 import { IonicStorageModule } from '@ionic/storage';
@@ -27,6 +28,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     StatusBar,
     SplashScreen,
     BrowserModule,
+    Network,    
     HttpClientModule,
     HTTP,
     UniqueDeviceID,
