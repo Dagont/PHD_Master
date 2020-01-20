@@ -6,7 +6,10 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import swal from 'sweetalert2';
+import { Router } from '@angular/router'
 import { promise } from 'protractor';
+import { resolve } from 'url';
+import { EmptyObservable } from "rxjs/observable/EmptyObservable";
 
 
 
@@ -30,10 +33,12 @@ export class AutenticarSesionService {
   private Token: string;
   private UrlBase: string;
   private tokenResponse: [];
+  private autenticado:boolean=false;
 
 
   constructor(private ObtenerID: ObtenerIdUnicoService, private variablesGlobales: VariablesGlobalesService,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private router:Router) {
 
     this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
     //this.IdUsuarioUnico = '864879035862160'
@@ -49,37 +54,40 @@ export class AutenticarSesionService {
 
 
   obtenerToken() {
-
     var ServerUrl = this.UrlBase + 'ValidateToken.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
-    console.log(ServerUrl);
+    //console.log(ServerUrl);
     return this.http.get(ServerUrl).pipe(
       catchError(
         err => {
           swal.fire('Modo Offline', 'No hay acceso a internet o la plataforma no se encuentra disponible.', 'info');
+          this.router.navigateByUrl('/inicio');
           return Observable.throw(err);
         }
       ));
-
   }
 
-  validarToken(): boolean {
-    this.obtenerToken().subscribe(res => {
-      this.tokenResponse = JSON.parse(JSON.stringify(res));
-      console.log(this.tokenResponse);
-      if (this.tokenResponse.length === 0) {
-        swal.fire('Error de autenticación',
-          'No se pudo validar el token en el servidor, por favor contacta al administrador del sistema',
-          'error');
-        return false;
-      } else {
-        Toast.fire({
-          icon: 'success',
-          title: 'Sesion iniciada'
-        })
-        return true;
-      }
-    });
-    return false;
+  validarToken():Promise<any> {
+    return new Promise (resolve => {
+      this.obtenerToken().subscribe(res => {
+        this.tokenResponse = JSON.parse(JSON.stringify(res));
+        
+        if (this.tokenResponse.length === 0) {
+          swal.fire('Error de autenticación',
+            'No se pudo validar el token en el servidor, por favor contacta al administrador del sistema',
+            'error');
+            
+         resolve(false);
+        } else {
+          Toast.fire({
+            icon: 'success',
+            title: 'Sesion iniciada'
+          })
+          resolve(true);
+        }
+
+    })
+  })
+
   }
 
 

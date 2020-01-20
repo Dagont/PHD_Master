@@ -22,7 +22,7 @@ export class SlidesPage implements OnInit {
 
   constructor(
     private route: Router,
-    private AutenticarSesionService: AutenticarSesionService,
+    private autenticarSesionService: AutenticarSesionService,
   ) {
   }
 
@@ -31,14 +31,11 @@ export class SlidesPage implements OnInit {
 
 
   continuar() {
-    if (this.AutenticarSesionService.validarToken()){
-    this.route.navigateByUrl("/inicio");
-    }else{
-
-    }
+    this.autenticarSesionService.validarToken().then((isAutenticado)=> {
+      console.log(isAutenticado);
+      if (isAutenticado) {
+        this.route.navigateByUrl("/inicio");
+      } 
+    })
   }
-
-
-
-
 }
