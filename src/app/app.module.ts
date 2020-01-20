@@ -10,6 +10,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+
+import { HTTP } from '@ionic-native/http/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
@@ -24,6 +26,9 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     Paciente,
     StatusBar,
     SplashScreen,
+    BrowserModule,
+    HttpClientModule,
+    HTTP,
     UniqueDeviceID,
     Uid,
     AndroidPermissions,

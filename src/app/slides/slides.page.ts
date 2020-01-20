@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { ObtenerIdUnicoService } from '../services/obtener-id-unico.service'
+import { SincronizarProductosService } from '../services/sincronizar-productos.service'
 
 @Component({
   selector: 'app-slides',
@@ -17,8 +18,10 @@ export class SlidesPage implements OnInit {
       titulo: "Tu Compañero en<br>RutaProwhey"
     }
   ]
-  constructor(private route: Router, private ObtenerIdUnicoService : ObtenerIdUnicoService) {
-
+  constructor(
+    private route: Router,
+    private ObtenerIdUnicoService: ObtenerIdUnicoService,
+    private SincronizarProductosService: SincronizarProductosService) {
   }
 
   ngOnInit() {
@@ -29,7 +32,7 @@ export class SlidesPage implements OnInit {
   }
 
   ObtenerIdUnico() {
-    this.IdUnico=this.ObtenerIdUnicoService.getID_UID("MAC");
+    this.IdUnico = this.ObtenerIdUnicoService.getID_UID("MAC");
     document.getElementById("MAC").innerHTML = "MAC: " + this.ObtenerIdUnicoService.getID_UID("MAC");
     document.getElementById("IMEI").innerHTML = "IMEI: " + this.ObtenerIdUnicoService.getID_UID("IMEI");
     document.getElementById("IMSI").innerHTML = "IMSI: " + this.ObtenerIdUnicoService.getID_UID("IMSI");
@@ -37,5 +40,10 @@ export class SlidesPage implements OnInit {
     document.getElementById("UUID").innerHTML = "UUID: " + this.ObtenerIdUnicoService.getID_UID("UUID");
   }
 
+  ObtenerProductos() {
+    document.getElementById("Res").innerHTML = "Res: " + this.SincronizarProductosService.parsearProductos();
+    
+    
+  }
 
 }
