@@ -7,12 +7,11 @@ import swal from 'sweetalert2';
   providedIn: 'root'
 })
 export class VariablesGlobalesService {
-  //public UrlBase: string="http://evaluacion.boydorr.com/PHD/Scripts/PHP/";
-  public UrlBase: string="http://lineincloud.com:8080/PHD/Scripts/PHP/";
+  public UrlBase: string="http://evaluacion.boydorr.com/PHD/Scripts/PHP/";
+  //public UrlBase: string="http://lineincloud.com:8080/PHD/Scripts/PHP/";
   public token: string;
 
   constructor(private storage: Storage, platform: Platform) {
-   // this.UrlBase = "http://lineincloud.com:8080/PHD/Scripts/PHP/";
   }
 
 

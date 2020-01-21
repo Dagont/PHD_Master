@@ -40,14 +40,13 @@ export class AutenticarSesionService {
     private http: HttpClient,
     private router: Router) {
 
-    //this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
-    this.IdUsuarioUnico = '864879035862160'// REAL
-    //this.IdUsuarioUnico = '864879035862110'
+    this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
+    //this.IdUsuarioUnico = '864879035862160'// REAL
     this.UrlBase = variablesGlobales.getUrlBase();
   }
 
   obtenerToken(serverString:string) {
-    //console.log("ServerString: "+serverString);
+    console.log("ServerString: "+serverString);
     return this.http.get(serverString).pipe(
       catchError(
         err => {

@@ -22,8 +22,8 @@ export class SincronizarProductosService {
 
   constructor(private http: HttpClient, private variablesGlobales: VariablesGlobalesService,
     private ObtenerID: ObtenerIdUnicoService) {
-    //this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
-    this.IdUsuarioUnico = '864879035862160'// REAL
+    this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
+   // this.IdUsuarioUnico = '864879035862160'// REAL
     this.UrlBase = this.variablesGlobales.getUrlBase();
 
   }
