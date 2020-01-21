@@ -22,8 +22,8 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.storage.set('Token', 'FFFFFFFF');
-
+      //this.storage.set('Token', 'FFFFFFFF');
+      //this.storage.clear();
       /*ionic default*/
       this.statusBar.styleDefault();
       this.splashScreen.hide();

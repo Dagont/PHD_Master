@@ -33,30 +33,38 @@ export class AutenticarSesionService {
   private Token: string;
   private UrlBase: string;
   private tokenResponse: [];
-  private autenticado:boolean=false;
-
+  private autenticado: boolean = false;
+  private ServerUrl: string = this.UrlBase + 'ValidateToken.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
 
   constructor(private ObtenerID: ObtenerIdUnicoService, private variablesGlobales: VariablesGlobalesService,
     private http: HttpClient,
-    private router:Router) {
+    private router: Router) {
 
-    this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
-    //this.IdUsuarioUnico = '864879035862160'
+    //this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
+    this.IdUsuarioUnico = '864879035862160'// REAL
+    //this.IdUsuarioUnico = '864879035862110'
     this.UrlBase = variablesGlobales.getUrlBase();
-    this.variablesGlobales.getToken().then((token) => {
-      setTimeout(() => {
-        this.Token = token;
-      }, 1000)
-    })
   }
 
-
-
-
-  obtenerToken() {
-    var ServerUrl = this.UrlBase + 'ValidateToken.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
-    //console.log(ServerUrl);
-    return this.http.get(ServerUrl).pipe(
+  /*refrescarToken() {
+    this.variablesGlobales.get('Token').then(result => {
+      if (result != null) {
+        console.log('Get Result: ' + result);
+        this.Token = result;
+        this.ServerUrl = this.UrlBase + 'ValidateToken.php?token=' + result + '&appData=' + this.IdUsuarioUnico;
+        console.log(this.ServerUrl);
+      }
+    }).catch(e => {
+      console.log('error: ' + e);
+      // Handle errors here
+    });
+    return;
+  }
+*/
+  obtenerToken(serverString:string) {
+    //var ServerUrl = this.UrlBase + 'ValidateToken.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
+    console.log("ServerString: "+serverString);
+    return this.http.get(serverString).pipe(
       catchError(
         err => {
           swal.fire('Modo Offline', 'No hay acceso a internet o la plataforma no se encuentra disponible.', 'info');
@@ -66,28 +74,38 @@ export class AutenticarSesionService {
       ));
   }
 
-  validarToken():Promise<any> {
-    return new Promise (resolve => {
-      this.obtenerToken().subscribe(res => {
-        this.tokenResponse = JSON.parse(JSON.stringify(res));
-        
-        if (this.tokenResponse.length === 0) {
-          swal.fire('Error de autenticación',
-            'No se pudo validar el token en el servidor, por favor contacta al administrador del sistema',
-            'error');
-            
-         resolve(false);
-        } else {
-          Toast.fire({
-            icon: 'success',
-            title: 'Sesion iniciada'
-          })
-          resolve(true);
+  validarToken(): Promise<any> {
+    return new Promise(resolve => {
+      this.variablesGlobales.get('Token').then(result => {
+        if (result != null) {
+          console.log('Get Result: ' + result);
+          this.Token = result;
+          //this.ServerUrl = 
+          console.log(this.ServerUrl);
         }
+        this.obtenerToken(this.UrlBase + 'ValidateToken.php?token=' + result + '&appData=' + this.IdUsuarioUnico).subscribe(res => {
+          this.tokenResponse = JSON.parse(JSON.stringify(res));
 
+          if (this.tokenResponse.length === 0) {
+            swal.fire('Error de autenticación',
+              'No se pudo validar el token en el servidor, por favor contacta al administrador del sistema',
+              'error');
+
+            resolve(false);
+          } else {
+            Toast.fire({
+              icon: 'success',
+              title: 'Sesion iniciada'
+            })
+            resolve(true);
+          }
+
+        })
+      }).catch(e => {
+        console.log('error: ' + e);
+        // Handle errors here
+      })
     })
-  })
-
   }
 
 

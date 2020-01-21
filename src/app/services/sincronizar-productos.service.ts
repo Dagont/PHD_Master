@@ -22,16 +22,18 @@ export class SincronizarProductosService {
 
   constructor(private http: HttpClient, private variablesGlobales: VariablesGlobalesService,
     private ObtenerID: ObtenerIdUnicoService) {
-    this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
+    //this.IdUsuarioUnico = this.ObtenerID.getID_UID("IMEI");
+    this.IdUsuarioUnico = '864879035862160'// REAL
     this.UrlBase = this.variablesGlobales.getUrlBase();
+
+  }
+
+  obtenerProductos() {
     this.variablesGlobales.getToken().then((token)=>{
       setTimeout(()=>{
         this.Token=token;
       },1000)
     })
-  }
-
-  obtenerProductos() {
     var ServerUrl = this.UrlBase + 'GetProducts.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
     return this.http.get(ServerUrl).pipe(
       catchError(
