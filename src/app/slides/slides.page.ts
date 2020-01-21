@@ -40,7 +40,7 @@ constructor(
 
 continuar() {
   this.autenticarSesionService.validarToken().then((isAutenticado) => {
-    console.log(isAutenticado);
+    //console.log(isAutenticado);
     if (isAutenticado) {
       this.route.navigateByUrl("/inicio");
     } else {

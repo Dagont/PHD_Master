@@ -46,24 +46,8 @@ export class AutenticarSesionService {
     this.UrlBase = variablesGlobales.getUrlBase();
   }
 
-  /*refrescarToken() {
-    this.variablesGlobales.get('Token').then(result => {
-      if (result != null) {
-        console.log('Get Result: ' + result);
-        this.Token = result;
-        this.ServerUrl = this.UrlBase + 'ValidateToken.php?token=' + result + '&appData=' + this.IdUsuarioUnico;
-        console.log(this.ServerUrl);
-      }
-    }).catch(e => {
-      console.log('error: ' + e);
-      // Handle errors here
-    });
-    return;
-  }
-*/
   obtenerToken(serverString:string) {
-    //var ServerUrl = this.UrlBase + 'ValidateToken.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
-    console.log("ServerString: "+serverString);
+    //console.log("ServerString: "+serverString);
     return this.http.get(serverString).pipe(
       catchError(
         err => {
@@ -77,12 +61,6 @@ export class AutenticarSesionService {
   validarToken(): Promise<any> {
     return new Promise(resolve => {
       this.variablesGlobales.get('Token').then(result => {
-        if (result != null) {
-          console.log('Get Result: ' + result);
-          this.Token = result;
-          //this.ServerUrl = 
-          console.log(this.ServerUrl);
-        }
         this.obtenerToken(this.UrlBase + 'ValidateToken.php?token=' + result + '&appData=' + this.IdUsuarioUnico).subscribe(res => {
           this.tokenResponse = JSON.parse(JSON.stringify(res));
 

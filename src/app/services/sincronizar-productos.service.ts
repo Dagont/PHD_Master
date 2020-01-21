@@ -28,14 +28,8 @@ export class SincronizarProductosService {
 
   }
 
-  obtenerProductos() {
-    this.variablesGlobales.getToken().then((token)=>{
-      setTimeout(()=>{
-        this.Token=token;
-      },1000)
-    })
-    var ServerUrl = this.UrlBase + 'GetProducts.php?token=' + this.Token + '&appData=' + this.IdUsuarioUnico;
-    return this.http.get(ServerUrl).pipe(
+  obtenerProductos(serverString: string) {
+    return this.http.get(serverString).pipe(
       catchError(
         err => {
           swal.fire('Error de conexión', 'No hay acceso a internet o la plataforma no se encuentra disponible.', 'error');
@@ -46,42 +40,50 @@ export class SincronizarProductosService {
   }
 
   parsearProductos() {
-    this.obtenerProductos().subscribe(res => {
-      this.productos = JSON.parse(JSON.stringify(res));
-      if (this.productos.length === 0) {
-        swal.fire('Error de autenticación',
-        'No se pudo validar el token en el servidor, por favor contacta al administrador del sistema',
-        'error');
-      } else {
-        swal.fire({
-          title: 'Exito!',
-          text: 'Se importaron ' + this.productos.length + ' productos',
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#a9a9a9',
-          confirmButtonText: 'Ver elementos',
-          cancelButtonText: 'Continuar'
-        }).then((result) => {
-          var resumenProductos:string="";
+    this.variablesGlobales.get('Token').then(resultUrl => {
+      this.obtenerProductos(this.UrlBase + 'GetProducts.php?token=' + resultUrl + '&appData=' + this.IdUsuarioUnico).subscribe(res => {
+        this.productos = JSON.parse(JSON.stringify(res));
+        if (this.productos.length === 0) {
+          swal.fire('Error de autenticación',
+            'No se pudo validar el token en el servidor, por favor contacta al administrador del sistema',
+            'error');
+        } else {
+          swal.fire({
+            title: 'Exito!',
+            text: 'Se importaron ' + this.productos.length + ' productos',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#a9a9a9',
+            confirmButtonText: 'Ver elementos',
+            cancelButtonText: 'Continuar'
+          }).then((result) => {
+            var resumenProductos: string = "";
 
-          this.productos.forEach(element => {
-            resumenProductos+='['+element.IDPRODUCTO+'] '+element.PRODUCTO+'\n'
-          });
+            this.productos.forEach(element => {
+              resumenProductos += '[' + element.IDPRODUCTO + '] ' + element.PRODUCTO + '\n'
+            });
 
-          //guardarProductos(this.productos);
+            //guardarProductos(this.productos);
 
-          if (result.value) {
-            swal.fire(
-              'Elementos importados',
-              resumenProductos,
-              'info'
-            )
-          }
-        })
-      }
-    });
+            if (result.value) {
+              swal.fire(
+                'Elementos importados',
+                resumenProductos,
+                'info'
+              )
+            }
+          })
+
+        }
+
+      });
+    }).catch(e => {
+      console.log('error: ' + e);
+      // Handle errors here
+    })
   }
+
 
 
 }

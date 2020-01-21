@@ -7,6 +7,7 @@ import swal from 'sweetalert2';
   providedIn: 'root'
 })
 export class VariablesGlobalesService {
+  //public UrlBase: string="http://evaluacion.boydorr.com/PHD/Scripts/PHP/";
   public UrlBase: string="http://lineincloud.com:8080/PHD/Scripts/PHP/";
   public token: string;
 
@@ -18,7 +19,7 @@ export class VariablesGlobalesService {
   async set(key: string, value: any): Promise<any> {
     try {
       const result = await this.storage.set(key, value);
-      console.log('set string in storage: ' + result);
+      //console.log('set string in storage: ' + result);
       return true;
     } catch (reason) {
       console.log(reason);
@@ -29,7 +30,7 @@ export class VariablesGlobalesService {
   async get(key: string): Promise<any> {
     try {
       const result = await this.storage.get(key);
-      console.log('storageGET: ' + key + ': ' + result);
+      //console.log('storageGET: ' + key + ': ' + result);
       if (result != null) {
         return result;
       }
@@ -75,7 +76,7 @@ export class VariablesGlobalesService {
 
       if (token) {
         this.set('Token', token).then(result => {
-          console.log('Data is saved');
+          //console.log('Data is saved');
           }).catch(e => {
           console.log("error: " + e);
           });
